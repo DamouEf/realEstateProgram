@@ -1,0 +1,72 @@
+{
+    "controles": [
+      {
+        "intitule": "Le grand port maritime",
+        "type": "Gestion"
+      },
+      {
+        "intitule": "Le comité social et économique de la SNCF (CSE SNCF)",
+        "type": "Juridictionnel"
+      },
+      {
+        "intitule": "Agence de l'eau ADOUR GARONNE - Comptes",
+        "type": "Certification"
+      }
+    ],
+    "chambres": [
+      {
+        "id": 1,
+        "libelle_chambre": "Première chambre"
+      },
+      {
+        "id": 2,
+        "libelle_chambre": "Deuxième chambre"
+      },
+      {
+        "id": 3,
+        "libelle_chambre": "Troisième chambre"
+      },
+      {
+        "id": 4,
+        "libelle_chambre": "Quatrième chambre"
+      },
+      {
+        "id": 5,
+        "libelle_chambre": "Cinquième chambre"
+      },
+      {
+        "id": 6,
+        "libelle_chambre": "Sixième chambre"
+      }
+    ],
+    "intervenants": [
+        {
+          "id": 1,
+          "role": "Expert",
+          "civility": "Monsieur",
+          "name": "quessy",
+          "last_name": "Gilbert",
+          "vacations_number": 25
+        },
+        {
+          "id": 2,
+          "role": "Rapporteur",
+          "civility": "Madame",
+          "name": "douffet",
+          "last_name": "Matilda",
+          "vacations_number": 20
+        },
+        {
+          "id": 3,
+          "role": "Expert",
+          "civility": "Madame",
+          "name": "grondin",
+          "last_name": "Cendrillon",
+          "vacations_number": 25
+        }
+      ]
+
+
+
+  }
+  

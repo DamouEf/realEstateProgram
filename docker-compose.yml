@@ -1,0 +1,30 @@
+version: '3.5'
+services:
+    tuto:
+        image: first/tuto
+        build: .
+        restart: unless-stopped
+        environment: 
+            - BASE_URL=
+            - DATABASE_URL=psql://test:test@postgresql:5432/test
+        command: sh -c "chmod +x ./entrypoint.sh && ./entrypoint.sh"
+
+        ports:
+            - 12000:5000
+        volumes:
+            - .:/code
+
+    postgresql:
+        image: postgres:10.4
+        restart: unless-stopped
+        environment:
+            - POSTGRES_USER=test
+            - POSTGRES_PASSWORD=test
+            - POSTGRES_DB=test
+        volumes:
+            - postgresql:/var/lib/postgresql/data
+
+volumes:
+    postgresql:
+    pgadmin:
+    # mysql:
