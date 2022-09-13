@@ -1,29 +1,3 @@
-# What you need to run this projects
-
-* Docker (https://docs.docker.com/engine/install/)
-* Docker compose (https://docs.docker.com/compose/install/compose-plugin/)
-
-
-# To start the project in docker (using bash)
-```
-docker-compose up -d --build
-```
-
-and then to see logs :
-
-```
-docker ps
-docker logs -f <container_name>
-```
-
-# To run units tests ( inside the container )
-
-```
-docker exec -it <container_name> sh
-cd TestTechnique/
-python manage.py test --verbosity=2
-```
-
 # Test Technique
 
 Un Programme immobilier est caractérisé par :
@@ -72,3 +46,38 @@ premier, puis tri par prix décroissant, surface décroissante.
 
 TACHE 4 : Vérifier que votre programme peut être mis en production (Docker, pytest, …)
 Librairies: django, django_rest_framework, pytest + celles dont vous avez besoin. 
+
+# What you need to run this projects
+
+* Docker (https://docs.docker.com/engine/install/)
+* Docker compose (https://docs.docker.com/compose/install/compose-plugin/)
+
+
+# To start the project in docker (using bash)
+```
+docker-compose up -d --build
+```
+
+and then to see logs :
+
+```
+docker ps
+docker logs -f <container_name>
+```
+
+# To run units tests ( inside the container )
+
+```
+docker exec -it <container_name> sh
+cd TestTechnique/
+python manage.py test --verbosity=2
+```
+
+# To load data for test ( inside the container ) 
+## Task 1 
+
+```
+docker exec -it <container_name> sh
+cd TestTechnique/scripts/ && python script.py && cd .. && python manage.py loaddata scripts/data_set/sample.json 
+
+```
