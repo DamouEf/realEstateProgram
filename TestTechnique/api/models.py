@@ -1,13 +1,14 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.postgres.fields import ArrayField
-from django.db.models import Q, F, Value
+from django.db.models import Q, F, Value, When, IntegerField, Case
 from django.db.models.functions import Concat
 
 
 # Constants
 DEFAUL_CHAR_LENGTH = 255
-
+SUMMER = [6, 7, 8, 9]
+WINTER = [12, 1, 2, 3]
 
 class Program(models.Model):
     name = models.CharField(max_length=DEFAUL_CHAR_LENGTH, null=True, help_text="this field represents the name of the program")
@@ -75,5 +76,36 @@ class Appartement(models.Model):
                 libelle_program=Concat(F('program__name'), Value(' PROMO SPECIALE'))
             )
         return Appartement.objects.all()
+
+    @classmethod
+    def order_appartements(cls, month: int):
+        """
+        This function return a querryset ordered by saison / price / surface
+        params : 
+            * month : int | number of the month
+        return : 
+            * querryset
+        """
+
+        if month in SUMMER:
+            return Appartement.objects.annotate(
+                custom_order=Case(
+                    When(characteristics__contains=["proche station ski"], then=Value(2)),
+                    When(characteristics__contains=["piscine"], then=Value(1)),
+                    default=Value(2),
+                    output_field=IntegerField()
+                )
+            ).order_by("custom_order", "-price", "-surface").all()
+        elif month in WINTER:
+            return Appartement.objects.annotate(
+                custom_order=Case(
+                    When(characteristics__contains=["proche station ski"], then=Value(1)),
+                    When(characteristics__contains=["piscine"], then=Value(2)),
+                    default=Value(2),
+                    output_field=IntegerField()
+                )
+            ).order_by("custom_order", "-price", "-surface").all()
+
+        return Appartement.objects.order_by("-price", "-surface").all()
 
     

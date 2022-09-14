@@ -233,3 +233,73 @@ class TestApi(TestCase):
         self.assertEquals(appartement.id, appartement_a.id)
         self.assertEquals(appartement.price_offre, 95)
         self.assertEquals(appartement.libelle_program, f"{program_xx.name} PROMO SPECIALE")
+
+
+    def test_order_appartements(self):
+        """
+        In this test we will test the order_appartements() function with diffrents cases
+        first we will create:
+            * appartement A with criteria ["proche station ski"]
+            * appartement B with criteria ["picine"]
+            * appartement C with criteria []
+        case 1: 
+            * SUMMER time
+        case 2:
+            * winter time
+        case 3:
+            * another periode of the year
+        
+        expected : 
+            * case 1 : B,C,A
+            * case 2 : A,C,B
+            * case 3 : C,A,B
+        """
+
+        # initial data
+        program_xx: Program = Program.objects.create(name="Program xx",activate=True)
+        appartement_a = Appartement.objects.create(
+            surface=59,
+            price=100, 
+            room_count=3,
+            program=program_xx,
+            characteristics=["proche station ski"]
+        )
+        appartement_b = Appartement.objects.create(
+            surface=58,
+            price=100, 
+            room_count=3,
+            program=program_xx,
+            characteristics=["piscine"]
+        )
+        appartement_c = Appartement.objects.create(
+            surface=58,
+            price=300, 
+            room_count=3,
+            program=program_xx,
+            characteristics=[]
+        )
+
+        self.assertEquals(Appartement.objects.all().count(), 3)
+        
+        # case 1
+        appartements: Appartement = Appartement.order_appartements(month=6)
+        self.assertEquals(appartements[0].id, appartement_b.id)
+        self.assertEquals(appartements[1].id, appartement_c.id)
+        self.assertEquals(appartements[2].id, appartement_a.id)
+
+        # case 2
+        appartements: Appartement = Appartement.order_appartements(month=1)
+        self.assertEquals(appartements[0].id, appartement_a.id)
+        self.assertEquals(appartements[1].id, appartement_c.id)
+        self.assertEquals(appartements[2].id, appartement_b.id)
+
+        # case 3
+        appartements: Appartement = Appartement.order_appartements(month=4)
+        self.assertEquals(appartements[0].id, appartement_c.id)
+        self.assertEquals(appartements[1].id, appartement_a.id)
+        self.assertEquals(appartements[2].id, appartement_b.id)
+
+
+
+
+
