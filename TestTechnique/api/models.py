@@ -1,7 +1,8 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.postgres.fields import ArrayField
-from django.db.models import Q
+from django.db.models import Q, F, Value
+from django.db.models.functions import Concat
 
 
 # Constants
@@ -54,5 +55,25 @@ class Appartement(models.Model):
             * querryset
         """
         return Appartement.objects.filter(Q(price__lt=max_price) & Q(price__gt=min_price)).all()
+
+    @classmethod
+    def special_offers(cls, offre_code: str):
+        """
+        This function return a querryset that after a special offre
+
+        # offre_code = PERE NOEL:
+            * price minus 5%
+            * "PROMO SPECIALE" will be added to the name of the related program
+        params : 
+            * offre_code : string | code of the offre   
+        return : 
+            * querryset
+        """
+        if offre_code == "PERE NOEL":
+            return Appartement.objects.annotate(
+                price_offre=(F('price') * 0.95),
+                libelle_program=Concat(F('program__name'), Value(' PROMO SPECIALE'))
+            )
+        return Appartement.objects.all()
 
     

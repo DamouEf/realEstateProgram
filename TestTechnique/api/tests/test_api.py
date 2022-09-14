@@ -207,3 +207,29 @@ class TestApi(TestCase):
         programs = Program.get_program_with_appartement_contains_specific_criteria(criteria="piscine")
         self.assertEquals(programs.count(), 1)
         self.assertEquals(programs.first().id , program_xx.id)
+
+
+    def test_special_offers(self):
+        """
+        In this test we will test the special_offers() function with code offre "PERE NOEL" 
+        expected : 
+            * price appartement will be -5%
+            * name program will has "PROMO SPECIALE" at the end
+        """
+
+        # initial data
+        program_xx: Program = Program.objects.create(name="Program xx",activate=True)
+        appartement_a = Appartement.objects.create(
+            surface=58,
+            price=100, 
+            room_count=3,
+            program=program_xx,
+            characteristics=["proche station ski", "piscine"]
+        )
+
+        self.assertEquals(Appartement.objects.all().count(), 1)
+        appartement: Appartement = Appartement.special_offers(offre_code="PERE NOEL").first()
+
+        self.assertEquals(appartement.id, appartement_a.id)
+        self.assertEquals(appartement.price_offre, 95)
+        self.assertEquals(appartement.libelle_program, f"{program_xx.name} PROMO SPECIALE")
