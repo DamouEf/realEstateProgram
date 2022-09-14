@@ -45,7 +45,7 @@ class TestApi(TestCase):
         """
 
         # inital data
-        program_x = Program.objects.create(name="Program XXX")
+        program_x: Program = Program.objects.create(name="Program XXX")
         appartement_1 = Appartement.objects.create(
             surface=58,
             price=300, 
@@ -81,7 +81,7 @@ class TestApi(TestCase):
         """
 
         # initial data
-        program_x = Program.objects.create(name="Program XXX")
+        program_x: Program = Program.objects.create(name="Program XXX")
 
         payload: dict = {
             "surface": 58,
@@ -106,3 +106,104 @@ class TestApi(TestCase):
         self.assertEquals(created_appartement.program.id, program_x.id)
 
 
+    def test_get_appartements_with_actif_program(self):
+        """
+        In this test we will :
+            * create appartement A related to an actif program 
+            * create appartement B related to not actif program
+            * call the function get_appartements_with_actif_program()
+        expected : 
+            * only the appartement A will be returned 
+        """
+        
+        # initial data
+        program_actif: Program = Program.objects.create(name="Program actif",activate=True)
+        program_not_actif: Program = Program.objects.create(name="Program not actif",activate=False)
+
+        appartement_a = Appartement.objects.create(
+            surface=58,
+            price=300, 
+            room_count=3,
+            program=program_actif,
+            characteristics=["proche station ski", "piscine"]
+        )
+        appartement_b = Appartement.objects.create(
+            surface=58,
+            price=300, 
+            room_count=3,
+            program=program_not_actif,
+            characteristics=["proche station ski", "piscine"]
+        )
+
+        self.assertEquals(Appartement.objects.all().count(), 2)
+        appartements = Appartement.get_appartements_with_actif_program()
+        self.assertEquals(appartements.count(), 1)
+        self.assertEquals(appartements.first().id , appartement_a.id)
+
+    def test_get_appartements_with_price_range(self):
+        """
+        In this test we will :
+            * create appartement A with price in range ( 100 - 180) | example : 150
+            * create appartement B not in the price range ( 100 - 180 ) | example 300
+            * call the function get_appartements_with_price_range()
+        expected : 
+            * only the appartement A will be returned 
+        """
+        
+        # initial data
+        program_xx: Program = Program.objects.create(name="Program xx",activate=True)
+        program_yy: Program = Program.objects.create(name="Program yy",activate=True)
+
+        appartement_a = Appartement.objects.create(
+            surface=58,
+            price=150, 
+            room_count=3,
+            program=program_xx,
+            characteristics=["proche station ski", "piscine"]
+        )
+        appartement_b = Appartement.objects.create(
+            surface=58,
+            price=300, 
+            room_count=3,
+            program=program_yy,
+            characteristics=["proche station ski", "piscine"]
+        )
+
+        self.assertEquals(Appartement.objects.all().count(), 2)
+        appartements = Appartement.get_appartements_with_price_range(min_price=100, max_price=180)
+        self.assertEquals(appartements.count(), 1)
+        self.assertEquals(appartements.first().id , appartement_a.id)
+
+
+    def test_get_program_with_appartement_contains_specific_criteria(self):
+        """
+        In this test we will :
+            * create appartement A with characteristics contains "picine" 
+            * create appartement B without characteristics
+            * call the function get_program_with_appartement_contains_specific_criteria() and pass "picine" in params
+        expected : 
+            * only the appartement A will be returned 
+        """
+        # initial data
+        program_xx: Program = Program.objects.create(name="Program xx",activate=True)
+        program_yy: Program = Program.objects.create(name="Program yy",activate=True)
+
+        appartement_a = Appartement.objects.create(
+            surface=58,
+            price=150, 
+            room_count=3,
+            program=program_xx,
+            characteristics=["proche station ski", "piscine"]
+        )
+        appartement_b = Appartement.objects.create(
+            surface=58,
+            price=300, 
+            room_count=3,
+            program=program_yy,
+            characteristics=[]
+        )
+
+        self.assertEquals(Program.objects.all().count(), 2)
+        programs = Program.get_program_with_appartement_contains_specific_criteria(criteria="piscine")
+        self.assertEquals(programs.count(), 1)
+        self.assertEquals(programs.first().id , program_xx.id)
