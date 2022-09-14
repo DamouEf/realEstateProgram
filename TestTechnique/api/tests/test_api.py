@@ -105,7 +105,6 @@ class TestApi(TestCase):
         created_appartement = Appartement.objects.all().first()
         self.assertEquals(created_appartement.program.id, program_x.id)
 
-
     def test_get_appartements_with_actif_program(self):
         """
         In this test we will :
@@ -174,7 +173,6 @@ class TestApi(TestCase):
         self.assertEquals(appartements.count(), 1)
         self.assertEquals(appartements.first().id , appartement_a.id)
 
-
     def test_get_program_with_appartement_contains_specific_criteria(self):
         """
         In this test we will :
@@ -208,7 +206,6 @@ class TestApi(TestCase):
         self.assertEquals(programs.count(), 1)
         self.assertEquals(programs.first().id , program_xx.id)
 
-
     def test_special_offers(self):
         """
         In this test we will test the special_offers() function with code offre "PERE NOEL" 
@@ -233,7 +230,6 @@ class TestApi(TestCase):
         self.assertEquals(appartement.id, appartement_a.id)
         self.assertEquals(appartement.price_offre, 95)
         self.assertEquals(appartement.libelle_program, f"{program_xx.name} PROMO SPECIALE")
-
 
     def test_order_appartements(self):
         """
